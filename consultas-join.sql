@@ -1,29 +1,58 @@
 -- 1. Obtener el nombre de empresa de cada uno de los clientes junto al nombre de la provincia a la que pertenece.
 
+SELECT EMPRESA, DESCRIPCION
+FROM PROVINCIAS, CLIENTES
+WHERE CLIENTES.PROVINCIA = PROVINCIAS.PROVINCIA
 
+-- 2. Obtener los nombres de los proveedores junto con los artículos que nos suministran.
 
-2. Obtener los nombres de los proveedores junto con los artículos que nos suministran.
+SELECT PROVEEDORES.EMPRESA, ARTICULO
+FROM ARTICULOS, PROVEEDORES
+WHERE PROVEEDORES.PROVEEDOR = ARTICULOS.ARTICULO
 
+-- 3. Obtener todos los proveedores junto con sus artículos (si los tienen) seleccionando la descripción del artículo y el beneficio correspondiente de su venta.
 
-3. Obtener todos los proveedores junto con sus artículos (si los tienen) seleccionando la descripción del artículo y el beneficio correspondiente de su venta.
+SELECT PROVEEDORES.PROVEEDOR, ARTICULO, DESCRIPCION, PR_VENT - PR_COST BENEFICIO
+FROM PROVEEDORES, ARTICULOS
+WHERE PROVEEDORES.PROVEEDOR = ARTICULOS.PROVEEDOR
 
+SELECT PROVEEDOR, ARTICULO, DESCRIPCION, PR_VENT - PR_COST BENEFICIO
+FROM ARTICULOS
 
-4. Obtener de los artículos que han sido vendidos alguna vez (los que aparecen en los albaranes), su código, nombre y el número de existencias del artículo en el almacén actualmente.
+-- 4. Obtener de los artículos que han sido vendidos alguna vez (los que aparecen en los albaranes), su código, nombre y el número de existencias del artículo en el almacén actualmente.
 
+SELECT ARTICULOS.ARTICULO, ARTICULOS.PROVEEDOR, DESCRIPCION, EXISTENCIAS
+FROM ARTICULOS, LINEAS
+WHERE LINEAS.ARTICULO = ARTICULOS.ARTICULO
 
-5. Obtener el nombre y apellidos de los clientes madrileños y con forma de pago al ‘Contado’.
+-- 5. Obtener el nombre y apellidos de los clientes madrileños y con forma de pago al ‘Contado’.
 
+SELECT NOMBRE, APELLIDOS
+FROM PROVINCIAS, CLIENTES, FORMPAGOS
+WHERE UPPER(PROVINCIAS.DESCRIPCION) = 'MADRID' AND UPPER(FORMPAGOS.DESCRIPCION) =  'CONTADO' AND CLIENTES.PROVINCIA = PROVINCIAS.PROVINCIA AND CLIENTES.FORMPAGO = FORMPAGOS.FORMPAGO
 
-6. Obtener la descripción de las provincias que contengan clientes y proveedores.
+-- 6. Obtener la descripción de las provincias que contengan clientes y proveedores.
 
+SELECT DESCRIPCION
+FROM PROVEEDORES, PROVINCIAS, CLIENTES
+WHERE CLIENTES.PROVINCIA = PROVINCIAS.PROVINCIA AND PROVINCIAS.PROVINCIA = PROVEEDORES.PROVINCIA
+GROUP BY DESCRIPCION
 
-7. Obtener la descripción de las provincias que contengan clientes o proveedores.
+-- 7. Obtener la descripción de las provincias que contengan clientes o proveedores.
 
+SELECT DESCRIPCION
+FROM PROVEEDORES, PROVINCIAS, CLIENTES
+WHERE CLIENTES.PROVINCIA = PROVINCIAS.PROVINCIA AND PROVINCIAS.PROVINCIA = PROVEEDORES.PROVINCIA
+GROUP BY DESCRIPCION
 
-8. Obtener los artículos cuyo precio de venta esté entre 50000 y 60000 Euros. y la provincia del proveedor que lo suministra sea BARCELONA.
+-- 8. Obtener los artículos cuyo precio de venta esté entre 50000 y 60000 Euros. y la provincia del proveedor que lo suministra sea BARCELONA.
 
-
-9. Obtener los albaranes que contengan algún artículo que sea suministrado por algún proveedor vasco y a su vez que las existencias superen en el almacén el stock mínimo (bajo_mínimo) en más de 10 unidades.
+SELECT ARTICULOS.ARTICULO, ARTICULOS.PROVEEDOR
+FROM PROVEEDORES, ARTICULOS, PROVINCIAS
+WHERE PR_VENT BETWEEN 50000 AND 60000
+    AND PROVEEDORES.PROVINCIA = PROVINCIAS.PROVINCIA
+    AND ARTICULOS.PROVEEDOR = PROVEEDORES.PROVEEDOR
+-- 9. Obtener los albaranes que contengan algún artículo que sea suministrado por algún proveedor vasco y a su vez que las existencias superen en el almacén el stock mínimo (bajo_mínimo) en más de 10 unidades.
 
 
 10. Seleccionar los albaranes cuya fecha de pago se encuentre en la 1ª quincena de marzo de 1988 y la fecha de albarán sea de la 2ª quincena de febrero del mismo año.
