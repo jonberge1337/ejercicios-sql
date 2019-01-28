@@ -1,0 +1,8 @@
+INSERT INTO PERSONAS VALUES ('44571028H','Jack','Senpai','Goikoetxea','C/La Mejor Calle del Mundo','Irún','País Vasco');
+INSERT INTO PERSONAS VALUES ('95068403Z','Paco','Jones','Amidala','C/La Mejor Calle del Mundo','Irún','País Vasco');
+
+INSERT INTO COCHES VALUES ('1337 LOL','Sorento','KIA',05/06/07,'44571028H');
+INSERT INTO COCHES VALUES ('5702 SQL','Sorento','KIA',08/11/10,'95068403Z');
+
+INSERT INTO APARTAMENTOS VALUES (930295,'C/La Mejor Calle del Mundo',4,2,3,20,'44571028H');
+INSERT INTO APARTAMENTOS VALUES (201488, 'C/La Mejor Calle del Mundo',3,4,2,105,'95068403Z');

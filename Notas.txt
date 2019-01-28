@@ -1,0 +1,30 @@
+
+Proveedor --> Cod_Proveedor, Nombre_Empresa, Direccion, Poblacion, Telefono, Cod_Provincia (Referencia a Provincia)
+
+Provincia --> Cod_Provincia, Prefijo_Provincia, Descripcion_Provincia (A)
+
+Articulo --> Cod_Articulo, Tipo_Articulo (Referencia a Descuento), Descripcion_Articulo, Precio_Venta, Stock, Stock_Minimo, Cod_Unidad_Medida (Referencia a Medida)
+
+Descuento --> Tipo_Articulo, Descuento_Articulo
+
+Medida --> Cod_Unidad_Medida, Descripcion_Unidad_Medida (A)
+
+Cliente --> Cod_Cliente, Nombre_Empresa, Nombre_Gerente, Apellido1_Gerente, Apellido2_Gerente, Ciudad, País (Referencia a Paises), Cod_Pago
+
+Pais --> Pais, Moneda
+
+Forma_Pago --> Cod_Pago, Descripcion_Forma_Pago (A)
+
+Cab_Pedido --> Num_Pedido, Fecha_Pedido, Fecha_Envio, Fecha_Pago, Estado, Cod_Pago (Referencia a Forma_Pago), Cod_Cliente (Referencia a Cliente)
+
+Cab_Factura --> Num_Factura, Fecha_Factura, Plazo_Pago, Cod_Proveedor (Referencia a Proveedor)
+
+Cab_Albaran --> Num_Albaran, Fecha_Albaran, Num_Bultos, Num_Factura (Referencia a Cab_Factura)
+
+Catalogo --> Cod_Proveedor (Referencia a Proveedor), Cod_Articulo y Tipo_Articulo (Referencia a Articulo), Precio, Cantidad
+
+Detalle_Albaran --> Num_Albaran (Referencia a Cab_Albaran), Cod_Articulo y Tipo_Articulo (Referencia a Articulo), Precio, Cantidad
+
+Detalle_Pedido --> Cod_Articulo y Tipo_Articulo (Referencia a Articulo), Cab_Pedido (Referencia a Cab_Pedido), Cantidad, Precio
+
+Direccion --> Cod_Cliente (Referencia a Cliente), Direccion (TODO CLAVE PRIMARIA)
