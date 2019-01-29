@@ -54,8 +54,16 @@ WHERE PR_VENT BETWEEN 50000 AND 60000
     AND ARTICULOS.PROVEEDOR = PROVEEDORES.PROVEEDOR
 -- 9. Obtener los albaranes que contengan algún artículo que sea suministrado por algún proveedor vasco y a su vez que las existencias superen en el almacén el stock mínimo (bajo_mínimo) en más de 10 unidades.
 
+SELECT ALBARANES.ALBARAN, PROVINCIAS.DESCRIPCION
+FROM ALBARANES, LINEAS, ARTICULOS, PROVEEDORES, PROVINCIAS
+WHERE PROVINCIAS.DESCRIPCION IN('ALAVA', 'VIZCAYA', 'GUIPUZCOA')
+    AND LINEAS.ARTICULO = ARTICULOS.ARTICULO
+    AND LINEAS.PROVEEDOR = ARTICULOS.PROVEEDOR
+    AND ARTICULOS.PROVEEDOR = PROVEEDORES.PROVEEDOR
+    AND PROVEEDORES.PROVINCIA = PROVEEDORES.PROVINCIA
+    AND ALBARANES.ALBARAN = LINEAS.ALBARAN
 
-10. Seleccionar los albaranes cuya fecha de pago se encuentre en la 1ª quincena de marzo de 1988 y la fecha de albarán sea de la 2ª quincena de febrero del mismo año.
+-- 10. Seleccionar los albaranes cuya fecha de pago se encuentre en la 1ª quincena de marzo de 1988 y la fecha de albarán sea de la 2ª quincena de febrero del mismo año.
 
 
 11. Seleccionar los proveedores cuyas provincias estén en el rango 15 a 30 y cumpla a su vez que su código esté entre 20 y 40.
