@@ -24,6 +24,7 @@ FROM ARTICULOS
 SELECT ARTICULOS.ARTICULO, ARTICULOS.PROVEEDOR, DESCRIPCION, EXISTENCIAS
 FROM ARTICULOS, LINEAS
 WHERE LINEAS.ARTICULO = ARTICULOS.ARTICULO
+	AND LINEAS.PROVEEDOR = ARTICULOS.PROVEEDOR
 
 -- 5. Obtener el nombre y apellidos de los clientes madrileños y con forma de pago al ‘Contado’.
 
@@ -66,30 +67,79 @@ WHERE PROVINCIAS.DESCRIPCION IN('ALAVA', 'VIZCAYA', 'GUIPUZCOA')
 -- 10. Seleccionar los albaranes cuya fecha de pago se encuentre en la 1ª quincena de marzo de 1988 y la fecha de albarán sea de la 2ª quincena de febrero del mismo año.
 
 
-11. Seleccionar los proveedores cuyas provincias estén en el rango 15 a 30 y cumpla a su vez que su código esté entre 20 y 40.
+SELECT *
+FROM ALBARANES
+WHERE FECHA_PAGO BETWEEN TO_DATE('01/03/1988', 'DD/MM/YYYY') AND TO_DATE('15/03/1988', 'DD/MM/YYYY')
+    AND FECHA_ALBARAN BETWEEN TO_DATE('15/02/1988', 'DD/MM/YYYY') AND LAST_DAY(TO_DATE('15/02/1988', 'DD/MM/YYYY')) 
 
+-- 11. Seleccionar los proveedores cuyas provincias estén en el rango 15 a 30 y cumpla a su vez que su código esté entre 20 y 40.
 
-12. Seleccionar los proveedores vascos y madrileños.
+SELECT *
+FROM PROVEEDORES
+WHERE PROVINCIA BETWEEN 15 AND 30
+    AND PROVEEDOR BETWEEN 20 AND 40
 
+-- 12. Seleccionar los proveedores vascos y madrileños.
 
-13. Obtener los albaranes cuyas fechas de pago estén dentro de los meses impares de los años 1988 y 1990.
+SELECT PROVEEDOR, PROVEEDORES.PROVINCIA, PROVINCIAS.DESCRIPCION
+FROM PROVEEDORES, PROVINCIAS
+WHERE PROVEEDORES.PROVINCIA = PROVINCIAS.PROVINCIA
+    AND PROVINCIAS.DESCRIPCION IN('MADRID', 'ALAVA', 'GUIPUZCOA', 'VIZCAYA')
 
+-- 13. Obtener los albaranes cuyas fechas de pago estén dentro de los meses impares de los años 1988 y 1990.
 
-14. Obtener los clientes cuyas formas de pago sean al ‘Contado’, ‘30’ días o ‘30/60’ días.
+SELECT *
+FROM ALBARANES
+WHERE MOD(TO_NUMBER(TO_CHAR(FECHA_ALBARAN, 'MM')), 2) != 0
+     AND TO_CHAR(FECHA_ALBARAN, 'YYYY') IN('1988', '1990')
 
+-- 14. Obtener los clientes cuyas formas de pago sean al ‘Contado’, ‘30’ días o ‘30/60’ días.
 
-15. Seleccionar las provincias que comiencen con la letra ‘Z’ y su cuarta letra sea la ‘A’.
+SELECT CLIENTE, EMPRESA, NOMBRE, DESCRIPCION
+FROM CLIENTES, FORMPAGOS
+WHERE CLIENTES.FORMPAGO = FORMPAGOS.FORMPAGO
+    AND UPPER(FORMPAGOS.DESCRIPCION) IN('CONTADO', '30', '30/60')
 
+-- 15. Seleccionar las provincias que comiencen con la letra ‘Z’ y su cuarta letra sea la ‘A’.
 
-16. Buscar las empresas proveedoras que sean sociedades anónimas o sociedades limitadas.
+SELECT *
+FROM PROVINCIAS
+WHERE DESCRIPCION LIKE'Z__A%'
 
-17. Seleccionar las provincias que comiencen por la letra ‘B’,’M’, o ‘V’ y contengan la vocal ‘A’.
+-- 16. Buscar las empresas proveedoras que sean sociedades anónimas o sociedades limitadas.
 
+SELECT *
+FROM PROVEEDORES
+WHERE EMPRESA LIKE'%S.A.' OR EMPRESA LIKE '%S.L.'
 
-18. Seleccionar los clientes, cuya empresa contenga la cadena de caracteres ‘TALLER’ en su descripción y pertenezca a alguna provincia que contenga la letra ‘C’.
+-- 17. Seleccionar las provincias que comiencen por la letra ‘B’,’M’, o ‘V’ y contengan la vocal ‘A’.
 
+SELECT *
+FROM PROVINCIAS
+WHERE DESCRIPCION LIKE'B%A%'
+     OR DESCRIPCION LIKE'M%A%'
+     OR DESCRIPCION LIKE'V%A%'
 
-19. Seleccionar los proveedores cuyo prefijo de provincia comience por 94 y no tengan 2ª dirección.
+-- 18. Seleccionar los clientes, cuya empresa contenga la cadena de caracteres ‘TALLER’ en su descripción y pertenezca a alguna provincia que contenga la letra ‘C’.
 
+SELECT CLIENTE, EMPRESA, NOMBRE, DESCRIPCION
+FROM CLIENTES, PROVINCIAS
+WHERE UPPER(EMPRESA) LIKE'%TALLER%'
+    AND UPPER(DESCRIPCION) LIKE '%C%'
+    AND CLIENTES.PROVINCIA = PROVINCIAS.PROVINCIA
 
-20. Contar los albaranes que de los clientes cuyo distrito sea nulo y su nombre de empresa contenga la letra ‘M’ y la vocal ‘A’.
+-- 19. Seleccionar los proveedores cuyo prefijo de provincia comience por 94 y no tengan 2ª dirección.
+
+SELECT PROVEEDOR, EMPRESA, PREFIJO
+FROM PROVEEDORES, PROVINCIAS
+WHERE PROVEEDORES.PROVINCIA = PROVINCIAS.PROVINCIA
+     AND TO_CHAR(PREFIJO) LIKE '94%'
+     AND DIRECCION2 IS NULL
+
+-- 20. Contar los albaranes que de los clientes cuyo distrito sea nulo y su nombre de empresa contenga la letra ‘M’ y la vocal ‘A’.
+
+SELECT COUNT(*)
+FROM CLIENTES, ALBARANES
+WHERE CLIENTES.CLIENTE = ALBARANES.CLIENTE
+     AND DISTRITO IS NULL
+     AND EMPRESA LIKE '%M%A%'
