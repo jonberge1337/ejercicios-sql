@@ -29,6 +29,7 @@ FROM PROVEEDORES, ARTICULOS, PROVINCIAS
 WHERE EXISTENCIAS - BAJO_MINIMO = (SELECT MAX(EXISTENCIAS - BAJO_MINIMO) FROM ARTICULOS)
     AND PROVEEDORES.PROVINCIA = PROVINCIAS.PROVINCIA
     AND UPPER(PROVINCIAS.DESCRIPCION) LIKE'%D'
+/
 /* 26. Seleccionar los proveedores que pertenezcan a alguna provincia que empiece por la letra G que a su vez contenga algún cliente con forma de pago al contado. */
 
 
