@@ -1,12 +1,21 @@
 /* 21. Seleccionar los artículos cuyas existencias en almacén sean de menor cantidad, entre los que tienen existencias (no nulo). */
 
-
+SELECT ARTICULO, PROVEEDOR, EXISTENCIAS
+FROM ARTICULOS
+WHERE EXISTENCIAS IS NOT NULL AND EXISTENCIAS = (SELECT MIN(EXISTENCIAS) FROM ARTICULOS)
+/
 /* 22. Seleccionar los artículos cuyo precio de costo sea inferior al precio de todos los artículos vendidos. */
 
-
+SELECT ARTICULO, PROVEEDOR, PR_COST
+FROM ARTICULOS
+WHERE PR_COST < ALL(SELECT MIN(PRECIO) FROM LINEAS)
+/
 /* 23. Seleccionar los artículos que más beneficios nos proporcione su venta, así como dicho beneficio. */
 
-
+SELECT ARTICULO, PROVEEDOR, PR_VENT - PR_COST "BENEFICIO MAXIMO"
+FROM ARTICULOS
+WHERE PR_VENT - PR_COST = (SELECT MAX(PR_VENT - PR_COST) FROM ARTICULOS)
+/
 /* 24. Obtener los clientes que posean los albaranes con fecha de pago más reciente. */
 
 
