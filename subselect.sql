@@ -18,10 +18,17 @@ WHERE PR_VENT - PR_COST = (SELECT MAX(PR_VENT - PR_COST) FROM ARTICULOS)
 /
 /* 24. Obtener los clientes que posean los albaranes con fecha de pago más reciente. */
 
-
+SELECT *
+FROM ALBARANES
+WHERE FECHA_ALBARAN = (SELECT MAX(FECHA_ALBARAN) FROM ALBARANES)
+/
 /* 25. Obtener los proveedores cuyos artículos tienen el mayor margen de existencias en el almacén (existencias – bajo_mínimo), dentro de los que pertenecen a las provincias que terminan con la letra D. */
 
-
+SELECT PROVEEDORES.*
+FROM PROVEEDORES, ARTICULOS, PROVINCIAS
+WHERE EXISTENCIAS - BAJO_MINIMO = (SELECT MAX(EXISTENCIAS - BAJO_MINIMO) FROM ARTICULOS)
+    AND PROVEEDORES.PROVINCIA = PROVINCIAS.PROVINCIA
+    AND UPPER(PROVINCIAS.DESCRIPCION) LIKE'%D'
 /* 26. Seleccionar los proveedores que pertenezcan a alguna provincia que empiece por la letra G que a su vez contenga algún cliente con forma de pago al contado. */
 
 
