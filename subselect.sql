@@ -33,37 +33,70 @@ WHERE EXISTENCIAS - BAJO_MINIMO = (SELECT MAX(EXISTENCIAS - BAJO_MINIMO) FROM AR
 /
 /* 26. Seleccionar los proveedores que pertenezcan a alguna provincia que empiece por la letra G que a su vez contenga algún cliente con forma de pago al contado. */
 
-
+SELECT *
+FROM PROVEEDORES
+WHERE PROVINCIA IN (SELECT PROVINCIA FROM PROVINCIAS WHERE DESCRIPCION LIKE 'G%')
+AND PROVINCIA IN (SELECT PROVINCIA FROM CLIENTES WHERE FORMPAGO = 'C')
+/
 /* 27. Obtener las provincias que tienen clientes y proveedores. */
 
-
+SELECT *
+FROM PROVINCIAS
+WHERE PROVINCIA IN (SELECT PROVINCIA FROM CLIENTES)
+AND PROVINCIA IN (SELECT PROVINCIA FROM PROVEEDORES)
+/
 /* 28. Presentar la lista de clientes que han realizado alguna compra que no pertenecen a ninguna provincia que empiece por ‘M’. */
 
-
+SELECT *
+FROM CLIENTES
+WHERE CLIENTE IN (SELECT CLIENTE FROM ALBARANES)
+AND PROVINCIA IN (SELECT PROVINCIA FROM PROVINCIAS WHERE UPPER(SUBSTR(DESCRIPCION, 1, 1)) != 'M')
+/
 /* 29. Mostrar los clientes que no hayan pagado al contado sus pedidos en el mes de marzo de 1988. */
 
-
+SELECT *
+FROM CLIENTES
+WHERE FORMPAGO IN(SELECT FORMPAGO FROM ALBARANES WHERE TO_CHAR(FECHA_ALBARAN, 'MM/YYYY') = '03/1988' AND UPPER(FORMPAGO) != 'C')
+/
 /* 30. Mostrar los clientes que tengan alguna compra con forma de pago diferente a la que tienen asignada por defecto. */
 
- 
-
+ SELECT *
+FROM CLIENTES
+WHERE FORMPAGO NOT IN(SELECT FORMPAGO FROM ALBARANES)
+/
 /* 31. Mostrar los albaranes que no posean líneas. */
 
-
+SELECT *
+FROM ALBARANES
+WHERE ALBARAN NOT IN(SELECT ALBARAN FROM LINEAS)
+/
 /* 32. Seleccionar los clientes que contengan los albaranes en el 1er trimestre de 1988. */
 
-
+SELECT *
+FROM CLIENTES
+WHERE CLIENTE IN(SELECT CLIENTE FROM ALBARANES WHERE FECHA_ALBARAN BETWEEN TO_DATE('1/1/1988', 'DD/MM/YYYY') AND TO_DATE('31/3/1988', 'DD/MM/YYYY'))
+/
 /* 33. Seleccionar las provincias que no posean clientes. */
 
-
+SELECT *
+FROM PROVINCIAS
+WHERE PROVINCIA NOT IN(SELECT PROVINCIA FROM CLIENTES)
+/* /revisar */
 /* 34. Seleccionar las provincias que posean clientes sin albaranes. */
 
-
+SELECT DISTINCT PROVINCIAS.*
+FROM CLIENTES, PROVINCIAS
+WHERE CLIENTES.PROVINCIA = PROVINCIAS.PROVINCIA
+AND CLIENTE NOT IN(SELECT CLIENTE FROM ALBARANES)
+/* /preguntar */
 /* 35. Obtener las provincias que contienen clientes y proveedores. */
 
-
+SELECT *
+FROM PROVINCIAS
+WHERE PROVINCIA IN(SELECT PROVINCIA FROM CLIENTES)
+     AND PROVINCIA IN(SELECT PROVINCIA FROM PROVEEDORES)
+/
 /* 36. Obtener las provincias con clientes y con proveedores que nos suministren algún artículo. */
-
 
 
 /* 37. Obtener las provincias que contengan todas las formas de pago entre todos sus clientes. */
