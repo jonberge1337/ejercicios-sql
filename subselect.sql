@@ -25,11 +25,10 @@ WHERE FECHA_ALBARAN = (SELECT MAX(FECHA_ALBARAN) FROM ALBARANES)
 /* 25. Obtener los proveedores cuyos artículos tienen el mayor margen de existencias en el almacén (existencias – bajo_mínimo), dentro de los que pertenecen a las provincias que terminan con la letra D. */
 
 SELECT PROVEEDORES.*
-FROM PROVEEDORES, ARTICULOS, PROVINCIAS
-WHERE EXISTENCIAS - BAJO_MINIMO = (SELECT MAX(EXISTENCIAS - BAJO_MINIMO) FROM ARTICULOS)
-    AND ARTICULO.PROVEEDOR = PROVEEDOR.PROVEEDOR
-    AND PROVEEDORES.PROVINCIA = PROVINCIAS.PROVINCIA
-    AND UPPER(PROVINCIAS.DESCRIPCION) LIKE'%D'
+FROM PROVEEDORES, ARTICULOS
+WHERE PROVINCIA IN(SELECT PROVINCIA FROM PROVINCIAS WHERE UPPER(DESCRIPCION) LIKE'%D')
+     AND EXISTENCIAS - BAJO_MINIMO = (SELECT MAX(EXISTENCIAS - BAJO_MINIMO) FROM ARTICULOS)
+     AND PROVEEDORES.PROVEEDOR = ARTICULOS.PROVEEDOR
 /
 /* 26. Seleccionar los proveedores que pertenezcan a alguna provincia que empiece por la letra G que a su vez contenga algún cliente con forma de pago al contado. */
 
@@ -88,7 +87,7 @@ SELECT DISTINCT PROVINCIAS.*
 FROM CLIENTES, PROVINCIAS
 WHERE CLIENTES.PROVINCIA = PROVINCIAS.PROVINCIA
 AND CLIENTE NOT IN(SELECT CLIENTE FROM ALBARANES)
-/* /preguntar */
+/* /preguntar sin distinct se me repiten */
 /* 35. Obtener las provincias que contienen clientes y proveedores. */
 
 SELECT *
@@ -98,7 +97,16 @@ WHERE PROVINCIA IN(SELECT PROVINCIA FROM CLIENTES)
 /
 /* 36. Obtener las provincias con clientes y con proveedores que nos suministren algún artículo. */
 
-
+SELECT PROVINCIAS.*
+FROM PROVINCIAS
+WHERE PROVINCIA IN(SELECT PROVINCIA FROM CLIENTES)
+     AND PROVINCIA IN(SELECT PROVINCIA FROM PROVEEDORES
+WHERE PROVEEDOR IN(SELECT PROVEEDOR FROM ARTICULOS))
+/
 /* 37. Obtener las provincias que contengan todas las formas de pago entre todos sus clientes. */
 
+SELECT *
+FROM PROVINCIAS
+WHERE NOT EXISTS(SELECT * FROM CLIENTES WHERE FORMPAGO = ALL(SELECT FORMPAGO FROM FORMPAGOS))
+/
 /*  38. Seleccionar los proveedores que tengan entre sus articulos todas las unidades de medida. */
