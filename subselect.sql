@@ -56,7 +56,7 @@ AND PROVINCIA IN (SELECT PROVINCIA FROM PROVINCIAS WHERE UPPER(SUBSTR(DESCRIPCIO
 SELECT *
 FROM CLIENTES
 WHERE FORMPAGO IN(SELECT FORMPAGO FROM ALBARANES WHERE TO_CHAR(FECHA_ALBARAN, 'MM/YYYY') = '03/1988' AND UPPER(FORMPAGO) != 'C')
-/
+/* / falta corregir */
 /* 30. Mostrar los clientes que tengan alguna compra con forma de pago diferente a la que tienen asignada por defecto. */
 
  SELECT *
@@ -105,8 +105,14 @@ WHERE PROVEEDOR IN(SELECT PROVEEDOR FROM ARTICULOS))
 /
 /* 37. Obtener las provincias que contengan todas las formas de pago entre todos sus clientes. */
 /* Obtener las provincias que cumplan que no existe ninguna forma de pago que no aparezca entre sus clientes */
+
 SELECT *
 FROM PROVINCIAS
-WHERE NOT EXISTS(SELECT * FROM CLIENTES WHERE FORMPAGO = ALL(SELECT FORMPAGO FROM FORMPAGOS))
+WHERE NOT EXISTS(SELECT *
+                 FROM FORMPAGOS
+                 WHERE NOT EXISTS(SELECT *
+                                  FROM CLIENTES
+                                  WHERE CLIENTES.PROVINCIA=PROVINCIAS.PROVINCIA
+                                      AND CLIENTES.FORMPAGO = FORMPAGOS.FORMPAGO))
 /
 /*  38. Seleccionar los proveedores que tengan entre sus articulos todas las unidades de medida. */
