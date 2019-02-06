@@ -87,7 +87,7 @@ SELECT DISTINCT PROVINCIAS.*
 FROM CLIENTES, PROVINCIAS
 WHERE CLIENTES.PROVINCIA = PROVINCIAS.PROVINCIA
 AND CLIENTE NOT IN(SELECT CLIENTE FROM ALBARANES)
-/* /preguntar sin distinct se me repiten */
+/
 /* 35. Obtener las provincias que contienen clientes y proveedores. */
 
 SELECT *
@@ -104,7 +104,7 @@ WHERE PROVINCIA IN(SELECT PROVINCIA FROM CLIENTES)
 WHERE PROVEEDOR IN(SELECT PROVEEDOR FROM ARTICULOS))
 /
 /* 37. Obtener las provincias que contengan todas las formas de pago entre todos sus clientes. */
-
+/* Obtener las provincias que cumplan que no existe ninguna forma de pago que no aparezca entre sus clientes */
 SELECT *
 FROM PROVINCIAS
 WHERE NOT EXISTS(SELECT * FROM CLIENTES WHERE FORMPAGO = ALL(SELECT FORMPAGO FROM FORMPAGOS))
