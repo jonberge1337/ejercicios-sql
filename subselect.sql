@@ -116,3 +116,12 @@ WHERE NOT EXISTS(SELECT *
                                       AND CLIENTES.FORMPAGO = FORMPAGOS.FORMPAGO))
 /
 /*  38. Seleccionar los proveedores que tengan entre sus articulos todas las unidades de medida. */
+
+SELECT *
+FROM PROVEEDORES
+WHERE NOT EXISTS(SELECT *
+                 FROM UNIDADES
+                 WHERE NOT EXISTS(SELECT *
+                                  FROM ARTICULOS
+                                  WHERE PROVEEDORES.PROVEEDOR = ARTICULOS.PROVEEDOR
+                                    AND UNIDADES.UNIDAD = ARTICULOS.UNIDAD))
