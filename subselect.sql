@@ -239,3 +239,4 @@ WHERE NOT EXISTS(SELECT *
                                   FROM ARTICULOS
                                   WHERE PROVEEDORES.PROVEEDOR = ARTICULOS.PROVEEDOR
                                     AND UNIDADES.UNIDAD = ARTICULOS.UNIDAD))
+/			    
