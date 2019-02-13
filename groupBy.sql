@@ -52,16 +52,47 @@ SELECT ALBARAN, SUM((PRECIO - (PRECIO*DESCUENTO/100))*cantidad)
 FROM LINEAS
 GROUP BY ALBARAN
 /
+
+SELECT ALBARAN, SUM((PRECIO * CANTIDAD) - (PRECIO*CANTIDAD*DESCUENTO/100))
+FROM LINEAS
+GROUP BY ALBARAN
+/
 /* 40. Mostrar por cada cliente el nº de albaranes que le corresponden. */
+
+SELECT CLIENTE, COUNT(*)
+FROM ALBARANES
+GROUP BY CLIENTE
+/
 
 /* 41. Mostrar para cada provincia la cantidad de artículos vendidos. */
 
+SELECT PROVINCIAS.DESCRIPCION, COUNT(*)
+FROM PROVEEDORES, LINEAS, PROVINCIAS
+WHERE PROVEEDORES.PROVEEDOR = LINEAS.PROVEEDOR
+  AND PROVEEDORES.PROVINCIA = PROVINCIAS.PROVINCIA
+GROUP BY PROVINCIAS.DESCRIPCION
+/
 /* 42. Mostrar el nº de albaranes que se acogen a las distintas formas de pago existentes (por descripción). */
 
+SELECT DESCRIPCION, COUNT(*)
+FROM ALBARANES, FORMPAGOS
+WHERE ALBARANES.FORMPAGO = FORMPAGOS.FORMPAGO
+GROUP BY DESCRIPCION
+/
 /* 43. Mostrar por cada proveedor, el promedio del precio al que nos vende sus artículos. */
 
+SELECT PROVEEDOR, AVG(PR_VENT)
+FROM ARTICULOS
+GROUP BY PROVEEDOR
+/
 /* 44. Mostrar la descripción de las provincias con menos de 10 clientes. */
 
+SELECT DESCRIPCION, COUNT(*)
+FROM PROVINCIAS, CLIENTES
+WHERE PROVINCIAS.PROVINCIA = CLIENTES.PROVINCIA
+GROUP BY DESCRIPCION
+HAVING COUNT(*) < 10
+/
 /* 45. Mostrar el código y descripción de los artículos que han sido vendidos a los clientes más de 5 veces. */
 
 /* 46. Mostrar los albaranes y su facturación (precio*cantidad), pero sólo de aquellos cuyo 15 % de dicha facturación sea mayor a 100000 €. */
