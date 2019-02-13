@@ -95,14 +95,60 @@ HAVING COUNT(*) < 10
 /
 /* 45. Mostrar el código y descripción de los artículos que han sido vendidos a los clientes más de 5 veces. */
 
+SELECT LINEAS.ARTICULO, LINEAS.PROVEEDOR, DESCRIPCION
+FROM ARTICULOS, LINEAS
+WHERE ARTICULOS.ARTICULO = LINEAS.ARTICULO
+  AND ARTICULOS.PROVEEDOR = LINEAS.PROVEEDOR
+GROUP BY LINEAS.ARTICULO, LINEAS.PROVEEDOR, DESCRIPCION
+HAVING COUNT(*) > 5
+/
+
 /* 46. Mostrar los albaranes y su facturación (precio*cantidad), pero sólo de aquellos cuyo 15 % de dicha facturación sea mayor a 100000 €. */
 
+SELECT ALBARAN, SUM(PRECIO * CANTIDAD) FACTURACION
+FROM LINEAS
+GROUP BY ALBARAN
+HAVING SUM(PRECIO * CANTIDAD * 0.15) > 100000
+/
 /* 47. Mostrar las provincias que contengan más de 4 clientes y además, más de 5 proveedores. */
-
+/* DA ERROR */
+SELECT PROVINCIAS.PROVINCIA, PROVINCIAS.DESCRIPCION, COUNT(CLIENTE), COUNT(PROVEEDOR)
+FROM PROVINCIAS, PROVEEDORES, CLIENTES
+WHERE PROVINCIAS.PROVINCIA = PROVEEDORES.PROVINCIA
+  AND PROVINCIAS.PROVINCIA = CLIENTES.PROVINCIA
+GROUP BY PROVINCIAS.PROVINCIA, PROVINCIAS.DESCRIPCION
+HAVING COUNT(CLIENTE) > 4, COUNT(PROVEEDOR) > 5
+/
 /* 48. Hacer el mismo ejercicio con subselect. */
+
+SELECT *
+FROM PROVINCIAS
+WHERE PROVINCIA IN (SELECT PROVINCIA
+		    FROM CLIENTES
+		    WHERE PROVINCIAS.PROVINCIA = CLIENTES.PROVINCIA
+		    GROUP BY PROVINCIA
+		    HAVING COUNT(*) > 4)
+  AND PROVINCIA IN (SELECT PROVINCIA
+		    FROM PROVEEDORES
+		    WHERE PROVINCIAS.PROVINCIA = PROVEEDORES.PROVINCIA
+		    GROUP BY PROVINCIA
+		    HAVING COUNT(*) > 5)
+/	
 
 /* 49. Mostrar las provincias que contienen más de 4 proveedores y además tienen algún cliente que haya realizado alguna compra. */
 
+SELECT *
+FROM PROVINCIAS
+WHERE PROVINCIA IN (SELECT PROVINCIA
+		    FROM PROVEEDORES
+		    WHERE PROVEEDORES.PROVINCIA = PROVINCIAS.PROVINCIA
+		    GROUP BY PROVINCIA
+		    HAVING COUNT(*) > 4)
+ AND PROVINCIA IN (SELECT PROVINCIA
+		   FROM CLIENTES, ALBARANES
+		   WHERE PROVINCIAS.PROVINCIA = CLIENTES.PROVINCIA
+		     AND CLIENTES.CLIENTE = ALBARANES.CLIENTE)	
+/	
 /* 50. Mostrar los artículos con su cantidad total vendida, de aquellos cuyo número de existencias sea mayor a la media y cuya fecha de última salida sea superior al 1er semestre de 1988. */
 
 /* 51. Mostrar los artículos de nuestro almacén, así como su IVA al 16% y su nº de existencias. */
