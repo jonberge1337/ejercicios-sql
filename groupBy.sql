@@ -57,6 +57,11 @@ SELECT ALBARAN, SUM((PRECIO * CANTIDAD) - (PRECIO*CANTIDAD*DESCUENTO/100))
 FROM LINEAS
 GROUP BY ALBARAN
 /
+
+SELECT ALBARAN, SUM((PRECIO * CANTIDAD) * (1 + DESCUENTO / 100)) "TOTAL FACTURADO"
+FROM LINEAS
+GROUP BY ALBARAN
+/
 /* 40. Mostrar por cada cliente el nº de albaranes que le corresponden. */
 
 SELECT CLIENTE, COUNT(*)
@@ -111,13 +116,13 @@ GROUP BY ALBARAN
 HAVING SUM(PRECIO * CANTIDAD * 0.15) > 100000
 /
 /* 47. Mostrar las provincias que contengan más de 4 clientes y además, más de 5 proveedores. */
-/* DA ERROR */
-SELECT PROVINCIAS.PROVINCIA, PROVINCIAS.DESCRIPCION, COUNT(CLIENTE), COUNT(PROVEEDOR)
+
+SELECT PROVINCIAS.PROVINCIA, PROVINCIAS.DESCRIPCION, COUNT(DISTINCT CLIENTE), COUNT(DISTINCT PROVEEDOR)
 FROM PROVINCIAS, PROVEEDORES, CLIENTES
 WHERE PROVINCIAS.PROVINCIA = PROVEEDORES.PROVINCIA
   AND PROVINCIAS.PROVINCIA = CLIENTES.PROVINCIA
 GROUP BY PROVINCIAS.PROVINCIA, PROVINCIAS.DESCRIPCION
-HAVING COUNT(CLIENTE) > 4, COUNT(PROVEEDOR) > 5
+HAVING COUNT(DISTINCT CLIENTE) > 4 AND COUNT(DISTINCT PROVEEDOR) > 5
 /
 /* 48. Hacer el mismo ejercicio con subselect. */
 
@@ -135,6 +140,21 @@ WHERE PROVINCIA IN (SELECT PROVINCIA
 		    HAVING COUNT(*) > 5)
 /	
 
+SELECT *
+FROM PROVINCIAS
+WHERE EXISTS (SELECT *
+	      FROM CLIENTES
+	      WHERE PROVINCIAS.PROVINCIA = CLIENTES.PROVINCIA
+	      GROUP BY PROVINCIA
+	      HAVING COUNT(*) > 4)
+  AND EXISTS (SELECT PROVINCIA
+	      FROM PROVEEDORES
+	      WHERE PROVINCIAS.PROVINCIA = PROVEEDORES.PROVINCIA
+	      GROUP BY PROVINCIA
+	      HAVING COUNT(*) > 5)
+/	
+
+
 /* 49. Mostrar las provincias que contienen más de 4 proveedores y además tienen algún cliente que haya realizado alguna compra. */
 
 SELECT *
@@ -151,10 +171,24 @@ WHERE PROVINCIA IN (SELECT PROVINCIA
 /	
 /* 50. Mostrar los artículos con su cantidad total vendida, de aquellos cuyo número de existencias sea mayor a la media y cuya fecha de última salida sea superior al 1er semestre de 1988. */
 
+SELECT ARTICULOS.ARTICULO, ARTICULOS.PROVEEDOR, SUM(CANTIDAD)
+FROM ARTICULOS, LINEAS
+WHERE ARTICULOS.PROVEEDOR = LINEAS.PROVEEDOR
+  AND ARTICULOS.ARTICULO = LINEAS.ARTICULO
+  AND FEC_ULT_SAL > TO_DATE('01/07/1988', 'DD/MM/YYYY')
+  AND EXISTENCIAS > (SELECT AVG(EXISTENCIAS)
+		      FROM ARTICULOS)
+GROUP BY ARTICULOS.ARTICULO, ARTICULOS.PROVEEDOR
+/
+
 /* 51. Mostrar los artículos de nuestro almacén, así como su IVA al 16% y su nº de existencias. */
 
 /* Ordenar por importe de IVA descendentemente y por nº de existencias de forma ascendente. */
 
+SELECT ARTICULO, PROVEEDOR, EXISTENCIAS, (PR_VENT * 0.16) IVA
+FROM ARTICULOS
+ORDER BY 4 DESC, EXISTENCIAS
+/
 
 
 
@@ -166,3 +200,5 @@ WHERE PROVINCIA IN (SELECT PROVINCIA
 /* 52. Mostrar los albaranes, con su total facturado, cliente y provincia de aquellos cuya fecha de facturación sea del segundo trimestre y la descripción de la provincia tenga mas de 6 letras. */
 
 /* Ordenarlo por fecha de envío y por total facturado. */
+
+
