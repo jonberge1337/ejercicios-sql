@@ -1,12 +1,12 @@
 /* 53. Construir una tabla derivada compuesta por los nombres de empresa, de clientes y de proveedores con sus respectivas direcciones, distritos y descripción de provincia. */
 /* Ordenarlo para que primero salgan los clientes y luego los proveedores, ordenados por empresa. */
-SELECT proveedor, empresa, apellidos, nombre
+SELECT PROVEEDOR, EMPRESA, APELLIDOS, NOMBRE
 FROM PROVEEDORES
 UNION ALL
-SELECT cliente, empresa, apellidos, nombre
+SELECT CLIENTE, EMPRESA, APELLIDOS, NOMBRE
 FROM CLIENTES
 /* order by al poner proveedor saca al poner cliente falla y las dos a la vez tambien falla */
-ORDER BY PROVEEDOR
+ORDER BY 2
 /
 
 /* 54. Obtener por cada descripción de provincia el nº de clientes y de proveedores que contiene. */
