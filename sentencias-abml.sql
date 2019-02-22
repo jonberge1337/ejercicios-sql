@@ -3,6 +3,7 @@
 CREATE TABLE COPIA_PROVINCIAS
 AS SELECT *
 FROM PROVINCIAS
+WHERE 1 = 0
 /
 
 SELECT *
@@ -25,7 +26,7 @@ WHERE PROVINCIA = 5
 /* 3.    Borra la provincia de Albacete de copiaprovincias. */
 
 DELETE FROM COPIAPROVINCIAS
-WHERE UPPER(DESCRIPCION) = ALBACETE
+WHERE UPPER(DESCRIPCION) = 'ALBACETE'
 /
 /* a.     Compruébalo. */
 
@@ -112,19 +113,23 @@ WHERE PREFIJO IS NOT NULL
 
 UPDATE FROM COPIAPROVINCIAS
 SET PREFIJO = (SELECT PREFIJO
-               FROM PROVINCIAS)
+               FROM PROVINCIAS
+               WHERE PROVINCIAS.PROVINCIA = COPIAPROVINCIAS.PROVINCIA)
 /
 /* a.     Compruébalo. */
 
 SELECT *
 FROM COPIAPROVINCIAS
 WHERE PREFIJO NOT IN (SELECT PREFIJO
-                      FROM PROVINCIAS) 
+                      FROM PROVINCIAS
+                      WHERE PROVINCIAS.PROVINCIA = COPIAPROVINCIAS.PROVINCIA) 
 /
 /* 12.  Crea la tabla copialbaranes a imagen de la tabla albaranes pero sin filas filas. */
 
 CREATE TABLE COPIALBARANES
-AS SELECT 
+AS SELECT *
+   FROM ALBARANES
+   WHERE 1 = 0
 /
 /* preguntar lo de filas filas */
 /* 13.  Inserta las filas de albaranes en copialbaranes del año 1988. */
@@ -149,7 +154,8 @@ SET FECHA_ALBARAN = TRUNC(SYSDATE)
 
 DELETE FROM COPIACLIENTES
 WHERE CLIENTE NOT IN(SELECT CLIENTE
-                     FROM COPIALBARANES)
+                     FROM COPIALBARANES
+                     WHERE CLIENTES IS NOT NULL)
 /
 /* a.     Compruébalo. */
 

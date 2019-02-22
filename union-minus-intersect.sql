@@ -11,6 +11,9 @@ ORDER BY 2
 
 /* 54. Obtener por cada descripción de provincia el nº de clientes y de proveedores que contiene. */
 /* Ordenar para que salgan primero el nº de proveedores descendentemente y luego los clientes de la misma forma. */
+
+SELECT DESCRIPCION
+FROM PROVINCIAS, CLIENTES, PROVEEDORES
   
 /* 55. Obtener la tabla derivada que obtenga los nombres de las provincias que tengan más de 5 clientes y las que tengan más de 2 proveedores. */
 /* Ordenarlo por nº de clientes o proveedores de forma descendente. */
@@ -21,3 +24,12 @@ ORDER BY 2
 /* 57. Sin cláusula INTERSECT. */
   
 /* 58. Mostrar los clientes, con su empresa, población, provincia y forma de pago exceptuando aquellos que tengan realizada alguna compra y además la forma de pago que tienen asignada por defecto no coincida con alguna forma de pago existente entre sus albaranes. */
+
+/* ejemplos */
+SELECT CLIENTE COD, EMPRESA, 'CLIENTE' TIPO
+FROM CLIENTES
+UNION
+SELECT PROVEEDOR, EMPRESA, 'PROVEEDOR'
+FROM PROVEEDORES
+ORDER BY 3
+/

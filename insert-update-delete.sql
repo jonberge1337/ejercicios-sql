@@ -79,10 +79,21 @@ INSERT INTO ALBARANES(ALBARAN, CLIENTE, FECHA_ALBARAN, FECHA_ENVIO, FECHA_PAGO, 
 VALUES(69, 102, TO_DATE('28/01/2019', 'DD/MM/YYYY'), TO_DATE('29/01/2019', 'DD/MM/YYYY'), TO_DATE('28/01/2019', 'DD/MM/YYYY'), 'C', 'S')
 /
 
-INSERT INTO ALBARANES(ALBARAN, CLIENTE, FECHA_ALBARAN, FECHA_ENVIO, FECHA_PAGO, FORMPAGO, ESTADO)
-VALUES(70, 102, TO_DATE('18/02/2019', 'DD/MM/YYYY'), TO_DATE('19/02/2019', 'DD/MM/YYYY'), TO_DATE('18/02/2019', 'DD/MM/YYYY'), 'C', 'S')
+INSERT INTO LINEAS(ALBARAN, LINEA, ARTICULO, PROVEEDOR, CANTIDAD, DESCUENTO, PRECIO)
+VALUES(69, 1, 300, 146, 8, 5, 1.10)
 /
-    
+ 
+INSERT INTO LINEAS(ALBARAN, LINEA, ARTICULO, PROVEEDOR, CANTIDAD, DESCUENTO, PRECIO)
+VALUES(69, 2, 301, 146, 5, 7, 1.20)
+/   
+
+SELECT *
+FROM LINEAS
+WHERE ALBARAN = 69
+/
+DELETE FROM LINEAS
+where albaran = 69
+/
 /* 4. Insertar en ‘provinciasXX’ las provincias que estén en la tabla clientes. */
 
 SELECT *
@@ -131,25 +142,86 @@ FROM PROVINCIASXX
 /
 
 DELETE FROM PROVINCIASXX
-WHERE PROVINCIA = (SELECT PROVINCIA
+WHERE PROVINCIA =ANY (SELECT PROVINCIA
                    FROM CLIENTES
                    GROUP BY PROVINCIA
                    HAVING COUNT(*) = (SELECT MAX(COUNT(*))
-                                      FROM CLIENTES, PROVINCIASXX
-                                      WHERE CLIENTES.PROVINCIA = PROVINCIASXX.PROVINCIA
+                                      FROM CLIENTES 
                                       GROUP BY CLIENTES.PROVINCIA))
 /
 /* 8. Borrar las provincias de ‘provinciasXX’ que tengan prefijo impar. */
 
+DELETE FROM PROVINCIASXX
+WHERE MOD(PREFIJO, 2) != 0
+/
+
+SELECT *
+FROM PROVINCIASXX
+WHERE MOD(PREFIJO, 2) = 0
+/
+
+SELECT *
+FROM PROVINCIASXX
+WHERE MOD(PREFIJO, 2) !=0
+/
+
+SELECT *
+FROM PROVINCIASXX
+/
 /* 9. Crear una tabla de nombre provincias0XX, que sea reflejo de la tabla provinciasXX, pero modificando sus nombres de columnas para que sean cod, descrip y pref. */
 
+CREATE TABLE PROVINCIAS0XX(COD, DESCRIP, PREF)
+AS SELECT *
+FROM PROVINCIASXX
+/
+
+CREATE TABLE PROVINCIAS0XX
+AS SELECT PROVINCIA COD, DESCRIPCION DESCRIP, PREFIJO PREF
+FROM PROVINCIASXX
+/
+
+DROP TABLE PROVINCIAS0XX
+/
+SELECT *
+FROM PROVINCIAS0XX
+/
 /* 10. Crear la tabla ‘articulosXX’ a partir de artículos con todas sus filas. */
 
+CREATE TABLE ARTICULOSXX
+AS SELECT *
+FROM ARTICULOS
+/
 /* 11. Generar la instrucción que actualice el precio de venta de los artículos incrementado en un 5%. (Tabla articulosXX) */
 
+SELECT *
+FROM ARTICULOSXX
+/
+
+UPDATE ARTICULOSXX
+SET PR_VENT = PR_VENT * 1.05
+/
 /* 12. Incrementar el precio de costo en un 30%, para aquellos artículos cuyo beneficio en la venta sea el menor entre todos. (Tabla articulosXX) */
 
+UPDATE ARTICULOSXX
+SET PR_COST = PR_COST * 1.30 
+WHERE PR_VENT - PR_COST = (SELECT MIN(PR_VENT - PR_COST)
+                           FROM ARTICULOSXX)
+/
+
+SELECT *
+FROM ARTICULOSXX
+WHERE PR_VENT - PR_COST = (SELECT MIN(PR_VENT - PR_COST)
+                           FROM ARTICULOSXX)
+/
 /* 13. Añadir a la tabla articulosXX la columna total_facturado y posteriormente actualizar dicha columna con las ventas realizadas para cada articulo. */
+
+ALTER TABLE ARTICULOSXX
+ADD(
+    TOTAL_FACTURADO, NUMBER(9.2)
+)
+/
+
+INSERT INTO ARTICULOSXX
 
 /* 14. Asignar al precio costo y de venta de los artículos de la tabla articulosXX el valor nulo. */
 
