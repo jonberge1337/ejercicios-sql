@@ -1,0 +1,18 @@
+connect almacen1/almacen1@XE
+
+CREATE USER USUARIO1 INDENTIFIED BY PATATA;
+
+connect system/manager@XE
+
+CREATE USER USUARIO1 INDENTIFIED BY PATATA;
+
+connect usuario1/patata
+
+GRANT CREATE SESSION TO USUARIO1;
+
+connect USUARIO/PATATA@XE
+
+connect system/manager@XE
+
+GRANT CREATE TABLE, CREATE SYNONIM TO USUARIO1;
+
