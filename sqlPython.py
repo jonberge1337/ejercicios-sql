@@ -2,18 +2,42 @@ import cx_Oracle
 
 def leerSql(archivo):
 
-    with open(archivo) as fichero:
-        return fichero
+    con = cx_Oracle.connect('almacen1/almacen1@localhost/xe')
+    cur = con.cursor()
+    with open(archivo) as f:
+        sql = f.read()
+        sqlSentencias = sql.split("/")
+        for sentencia in sqlSentencias:
+            cur.execute(sentencia)
+            for linea in cur:
+                print(linea)
+    cur.close()
+    con.close()
 
+def main():
+    print("""
+            A continuacion elige una opcion para ejecutar:
+            1- altas
+            2- bajas
+            3- consultas
+            """)
+    try:
+        opcion = int(input("tu opcion elige un numero del menu: "))
+    except:
+        opcion = 0
 
-f = open('tabledefinition.sql')
-full_sql = f.read()
-sql_commands = full_sql.split(';')
+    while opcion not in [1,2,3]:
+        try:
+            opcion = int(input("opcion invalida recuerda 1, 2 o 3: "))
+        except:
+            opcion = 0
 
-for sql_command in sql_commands:
-    curs.execute(sql_command)
+    if opcion == 1:
+        leerSql("altas.sql")
+    elif opcion == 2:
+        leerSql("bajas.sql")
+    else:
+        leerSql("consultas.sql")
 
-
-with open("subselect.sql") as f:
-    for i in f:
-        print(i)
+if __name__ == "__main__":
+    main()
