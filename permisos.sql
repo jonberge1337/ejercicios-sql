@@ -63,7 +63,9 @@ CONNECT ALMACEN1/ALMACEN1@XE
 GRANT MI_ROL_TABLASXX TO OTROUSU
 /
 /* 16. Siendo el usuario sys. ¿Asigna al usuario otrousu el rol del sistema que te permita ser usuario administrador? */
-CONNECT SYS/MANAGER@XE
+CONNECT SYS as sysdba
+/* password */
+manager
 /
 
 GRANT DBA TO OTROUSU
